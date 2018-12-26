@@ -81,51 +81,33 @@ void rabinKarp(string pat, string txt, list<int>* adj)
 }
 
 int main(int argc, char* argv[]){
-
+    ios_base::sync_with_stdio(false);
     if(argc != 3){
         cout << "Run the code with the following command: ./project3 [input_file] [output_file]" << endl;
         return 1;
     }
-
     string message;
     int numWords;
-
     ifstream infile(argv[1]);
     infile >> message;
     infile >> numWords;
-
     int messageLength = message.length();
-
     list<int>* adj = new list<int>[messageLength + 1];
-
     for (int i = 0; i < numWords; ++i){
         string word;
         infile >> word;
         rabinKarp(word, message, adj);
     }
-
-    for (int i = 0; i <= messageLength; ++i){
-        //cout << i << ": ";
-        for (list<int>::iterator it = adj[i].begin(); it != adj[i].end(); ++it){
-            //cout << (*it) << " ";
-        }
-        //cout << endl;
-    }
-
     auto* options = new long long int[messageLength + 1];
-
     for (int i = 0; i <= messageLength; ++i){
         options[i] = (long long int) 0;
     }
-
     priority_queue<Edge, vector<Edge>, edgeCompare> pq;
     for (list<int>::iterator it = adj[0].begin(); it != adj[0].end(); ++it){
         pq.push(make_pair(0, (*it)));
     }
-
     while(!pq.empty()){
         Edge currentEdge = pq.top();
-        //cout << "first: " << currentEdge.first << " second: " << currentEdge.second << endl;
         pq.pop();
         if(currentEdge.second != messageLength && options[currentEdge.second] == 0){
             for (list<int>::iterator it = adj[currentEdge.second].begin(); it != adj[currentEdge.second].end(); ++it){
@@ -140,8 +122,9 @@ int main(int argc, char* argv[]){
                     + (options[currentEdge.second] % ((long long int) pow(10, 9) + 7))) % ((long long int) pow(10, 9) + 7);
         }
     }
-    cout << options[message.length()] << endl;
-
+    ofstream myfile;
+    myfile.open(argv[2]);
+    myfile << options[message.length()] << endl;
     return 0;
 }
 
